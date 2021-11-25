@@ -7,6 +7,7 @@ import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.webkit.WebResourceRequest
@@ -16,6 +17,7 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
+import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.biometric.BiometricPrompt
 import com.onesignal.OSSubscriptionObserver
 import com.onesignal.OSSubscriptionStateChanges
@@ -60,8 +62,8 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
 
         OneSignal.addSubscriptionObserver(this)
         registerDevice()
-        sawoWebSDKURL = intent.getStringExtra(SAWO_WEBSDK_URL)
-        callBackClassName = intent.getStringExtra(CALLBACK_CLASS)
+        sawoWebSDKURL = intent.getStringExtra(SAWO_WEBSDK_URL).toString()
+        callBackClassName = intent.getStringExtra(CALLBACK_CLASS).toString()
         cryptographyManager = CryptographyManager()
         biometricPrompt = BiometricPromptUtils.createBiometricPrompt(
             this, ::processCancel, ::processData
@@ -73,7 +75,7 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
             this, SHARED_PREF_FILENAME, Context.MODE_PRIVATE, SHARED_PREF_ENC_PAIR_KEY
         )
         canStoreKeyInStorage =
-            BiometricManager.from(applicationContext).canAuthenticate() == BiometricManager
+            BiometricManager.from(applicationContext).canAuthenticate(BIOMETRIC_STRONG) == BiometricManager
                 .BIOMETRIC_SUCCESS
         val ConnectionManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val networkInfo = ConnectionManager.activeNetworkInfo
@@ -101,8 +103,8 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
                 mWebView.visibility = View.VISIBLE
             }
         }
-        Handler().postDelayed(
-            Runnable {
+        Handler(Looper.getMainLooper()).postDelayed(
+            {
                 val sharedPref = getSharedPreferences(SHARED_PREF_FILENAME, Context.MODE_PRIVATE)
                 mWebView.addJavascriptInterface(
                     SawoWebSDKInterface(
