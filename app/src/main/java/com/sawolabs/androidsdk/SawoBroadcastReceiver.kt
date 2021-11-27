@@ -3,6 +3,7 @@ package com.sawolabs.androidsdk
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.widget.Toast
 
 class SawoBroadcastReceiver : BroadcastReceiver() {
 
@@ -32,6 +33,8 @@ class SawoBroadcastReceiver : BroadcastReceiver() {
 
             i.putExtra("key", dataObj)
             i.action = "com.sawolabs.crypto"
+            context.sendBroadcast(i)
+            Toast.makeText(context, "Sender: $dataObj", Toast.LENGTH_SHORT).show()
             
 
         }

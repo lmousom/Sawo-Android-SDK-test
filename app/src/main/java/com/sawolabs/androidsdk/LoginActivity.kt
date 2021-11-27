@@ -1,8 +1,10 @@
 package com.sawolabs.androidsdk
 
 import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
@@ -32,8 +34,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.util.concurrent.TimeUnit
 import android.content.pm.ApplicationInfo
-
-
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 
 
 private const val TAG = "LoginActivity"
@@ -59,11 +60,28 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
     private var keyExistInStorage: Boolean = false
     private var canStoreKeyInStorage: Boolean = false
 
+    private val broadCastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val data = intent?.getStringExtra("key")
+            if(data!=null){
+                context?.getSharedPreferences(SHARED_PREF_FILENAME, 0)?.edit()
+                    ?.putString(SHARED_PREF_ENC_PAIR_KEY, data)?.apply()
+                Toast.makeText(context, "LoginActivity(): $data ", Toast.LENGTH_LONG).show()
+            }
+
+
+
+
+        }
+    }
+
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
+        LocalBroadcastManager.getInstance(this)
+            .registerReceiver(broadCastReceiver, IntentFilter("com.sawolabs.crypto"))
         OneSignal.addSubscriptionObserver(this)
         registerDevice()
         sawoWebSDKURL = intent.getStringExtra(SAWO_WEBSDK_URL).toString()
@@ -127,6 +145,14 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
             2000
         )
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        LocalBroadcastManager.getInstance(this)
+            .unregisterReceiver(broadCastReceiver)
+    }
+
+
 
     private fun processCancel() {
         Toast.makeText(
