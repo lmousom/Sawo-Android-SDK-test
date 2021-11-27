@@ -31,6 +31,10 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.concurrent.TimeUnit
+import android.content.pm.ApplicationInfo
+
+
+
 
 private const val TAG = "LoginActivity"
 
@@ -115,6 +119,9 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
                     ),
                     "webSDKInterface"
                 )
+                if (0 != applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) {
+                    WebView.setWebContentsDebuggingEnabled(true)
+                }
                 mWebView.loadUrl(sawoWebSDKURL)
             },
             2000
