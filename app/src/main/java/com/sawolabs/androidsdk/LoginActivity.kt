@@ -107,24 +107,27 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
             mWebView.destroy()
         }
         sawoWebSDKURL += "&keysExistInStorage=${keyExistInStorage}&canStoreKeyInStorage=${canStoreKeyInStorage}"
-        mWebView.settings.javaScriptEnabled = true
-        mWebView.settings.domStorageEnabled = true
-        mWebView.settings.databaseEnabled = true
-        mWebView.webViewClient = object : WebViewClient() {
-            override fun shouldOverrideUrlLoading(
-                view: WebView?,
-                request: WebResourceRequest?
-            ): Boolean {
-                view?.loadUrl(request?.url.toString())
-                return super.shouldOverrideUrlLoading(view, request)
-            }
+       mWebView.apply {
+           mWebView.settings.javaScriptEnabled = true
+           mWebView.settings.domStorageEnabled = true
+           mWebView.settings.databaseEnabled = true
+           mWebView.webViewClient = object : WebViewClient() {
+               override fun shouldOverrideUrlLoading(
+                   view: WebView?,
+                   request: WebResourceRequest?
+               ): Boolean {
+                   view?.loadUrl(request?.url.toString())
+                   return super.shouldOverrideUrlLoading(view, request)
+               }
 
-            override fun onPageFinished(view: WebView?, url: String?) {
-                super.onPageFinished(view, url)
-                mProgressBar.visibility = View.GONE
-                mWebView.visibility = View.VISIBLE
-            }
-        }
+               override fun onPageFinished(view: WebView?, url: String?) {
+                   super.onPageFinished(view, url)
+                   mProgressBar.visibility = View.GONE
+                   mWebView.visibility = View.VISIBLE
+               }
+           }
+       }
+
         lifecycleScope.launch {
             delay(2000)
             val sharedPref = getSharedPreferences(SHARED_PREF_FILENAME, Context.MODE_PRIVATE)
