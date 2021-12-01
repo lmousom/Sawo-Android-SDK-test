@@ -100,18 +100,17 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
         canStoreKeyInStorage =
             BiometricManager.from(applicationContext).canAuthenticate(BIOMETRIC_STRONG) == BiometricManager
                 .BIOMETRIC_SUCCESS
-//        val ConnectionManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-//        val networkInfo = ConnectionManager.activeNetworkInfo
+
         if (!isOnline(this)) {
             Toast.makeText(this, "Internet connection unavailable", Toast.LENGTH_LONG).show()
             mWebView.destroy()
         }
         sawoWebSDKURL += "&keysExistInStorage=${keyExistInStorage}&canStoreKeyInStorage=${canStoreKeyInStorage}"
-       mWebView.apply {
-           mWebView.settings.javaScriptEnabled = true
-           mWebView.settings.domStorageEnabled = true
-           mWebView.settings.databaseEnabled = true
-           mWebView.webViewClient = object : WebViewClient() {
+        mWebView.apply {
+           this.settings.javaScriptEnabled = true
+           this.settings.domStorageEnabled = true
+           this.settings.databaseEnabled = true
+           this.webViewClient = object : WebViewClient() {
                override fun shouldOverrideUrlLoading(
                    view: WebView?,
                    request: WebResourceRequest?
@@ -129,7 +128,7 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
        }
 
         lifecycleScope.launch {
-            delay(2000)
+            delay(2500)
             val sharedPref = getSharedPreferences(SHARED_PREF_FILENAME, Context.MODE_PRIVATE)
             mWebView.addJavascriptInterface(
                 SawoWebSDKInterface(
