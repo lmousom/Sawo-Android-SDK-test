@@ -334,7 +334,7 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
             call.enqueue(object : Callback<Void> {
                 override fun onResponse(call: Call<Void>, response: Response<Void>) {
                     if (response.isSuccessful) {
-                        Log.d(TAG, "RegisterDeviceApi: Successful ${response} ${deviceID}")
+                        Log.d(TAG, "RegisterDeviceApi: Successful $response deviceID:$deviceID deviceToken: $deviceToken")
                     } else {
                         try {
                             Log.d(

@@ -5,7 +5,8 @@ import android.content.Intent
 import com.onesignal.OneSignal
 
 //change the app id accordingly
-const val ONESIGNAL_APP_ID = "25f5431e-5523-4a96-8c6f-d6957424b19d"
+//const val ONESIGNAL_APP_ID = "25f5431e-5523-4a96-8c6f-d6957424b19d"
+const val ONESIGNAL_APP_ID = "198b67ad-4bbe-417a-b420-4c0e75e79ec2"
 
 class ApplicationClass : Application() {
     override fun onCreate() {
