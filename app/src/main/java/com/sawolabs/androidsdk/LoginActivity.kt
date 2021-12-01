@@ -34,7 +34,11 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.util.concurrent.TimeUnit
 import android.content.pm.ApplicationInfo
+import android.net.NetworkCapabilities
+import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 private const val TAG = "LoginActivity"
@@ -69,9 +73,6 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
                 Toast.makeText(context, "LoginActivity(): $data ", Toast.LENGTH_LONG).show()
             }
 
-
-
-
         }
     }
 
@@ -99,10 +100,9 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
         canStoreKeyInStorage =
             BiometricManager.from(applicationContext).canAuthenticate(BIOMETRIC_STRONG) == BiometricManager
                 .BIOMETRIC_SUCCESS
-        val ConnectionManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val networkInfo = ConnectionManager.activeNetworkInfo
-        if (networkInfo != null && networkInfo.isConnected == true) {
-        } else {
+//        val ConnectionManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+//        val networkInfo = ConnectionManager.activeNetworkInfo
+        if (!isOnline(this)) {
             Toast.makeText(this, "Internet connection unavailable", Toast.LENGTH_LONG).show()
             mWebView.destroy()
         }
@@ -125,25 +125,62 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
                 mWebView.visibility = View.VISIBLE
             }
         }
-        Handler(Looper.getMainLooper()).postDelayed(
-            {
-                val sharedPref = getSharedPreferences(SHARED_PREF_FILENAME, Context.MODE_PRIVATE)
-                mWebView.addJavascriptInterface(
-                    SawoWebSDKInterface(
-                        ::passPayloadToCallbackActivity,
-                        ::authenticateToEncrypt,
-                        ::authenticateToDecrypt,
-                        sharedPref.getString(SHARED_PREF_DEVICE_ID_KEY, null).toString()
-                    ),
-                    "webSDKInterface"
-                )
-                if (0 != applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) {
-                    WebView.setWebContentsDebuggingEnabled(true)
-                }
-                mWebView.loadUrl(sawoWebSDKURL)
-            },
-            2000
-        )
+        lifecycleScope.launch {
+            delay(2000)
+            val sharedPref = getSharedPreferences(SHARED_PREF_FILENAME, Context.MODE_PRIVATE)
+            mWebView.addJavascriptInterface(
+                SawoWebSDKInterface(
+                    ::passPayloadToCallbackActivity,
+                    ::authenticateToEncrypt,
+                    ::authenticateToDecrypt,
+                    sharedPref.getString(SHARED_PREF_DEVICE_ID_KEY, null).toString()
+                ),
+                "webSDKInterface"
+            )
+//            if (0 != applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) {
+//                WebView.setWebContentsDebuggingEnabled(true)
+//            }
+            mWebView.loadUrl(sawoWebSDKURL)
+        }
+//        Handler(Looper.getMainLooper()).postDelayed(
+//            {
+//                val sharedPref = getSharedPreferences(SHARED_PREF_FILENAME, Context.MODE_PRIVATE)
+//                mWebView.addJavascriptInterface(
+//                    SawoWebSDKInterface(
+//                        ::passPayloadToCallbackActivity,
+//                        ::authenticateToEncrypt,
+//                        ::authenticateToDecrypt,
+//                        sharedPref.getString(SHARED_PREF_DEVICE_ID_KEY, null).toString()
+//                    ),
+//                    "webSDKInterface"
+//                )
+//                if (0 != applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) {
+//                    WebView.setWebContentsDebuggingEnabled(true)
+//                }
+//                mWebView.loadUrl(sawoWebSDKURL)
+//            },
+//            2000
+//        )
+    }
+
+    private fun isOnline(context: Context): Boolean {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val capabilities =
+            connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+        if (capabilities != null) {
+            if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_CELLULAR")
+                return true
+            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_WIFI")
+                return true
+            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_ETHERNET")
+                return true
+            }
+        }
+        return false
     }
 
     override fun onDestroy() {
