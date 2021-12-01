@@ -92,8 +92,7 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
             this, ::processCancel, ::processData
         )
         promptInfo = BiometricPromptUtils.createPromptInfo(this)
-//        mWebView = findViewById(R.id.webview)
-        mWebView = WebView(this)
+        mWebView = findViewById(R.id.webview)
         mProgressBar = findViewById(R.id.progressBar)
         keyExistInStorage = cryptographyManager.isDataExistInSharedPrefs(
             this, SHARED_PREF_FILENAME, Context.MODE_PRIVATE, SHARED_PREF_ENC_PAIR_KEY
