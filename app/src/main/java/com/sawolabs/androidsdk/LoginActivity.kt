@@ -142,7 +142,7 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
 //            if (0 != applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) {
 //                WebView.setWebContentsDebuggingEnabled(true)
 //            }
-            delay(2500)
+            delay(2000L)
             mWebView.loadUrl(sawoWebSDKURL)
         }
 //        Handler(Looper.getMainLooper()).postDelayed(
