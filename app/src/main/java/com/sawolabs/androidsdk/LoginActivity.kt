@@ -128,7 +128,7 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
        }
 
         lifecycleScope.launch {
-            mWebView.loadUrl(sawoWebSDKURL)
+
             val sharedPref = getSharedPreferences(SHARED_PREF_FILENAME, Context.MODE_PRIVATE)
             mWebView.addJavascriptInterface(
                 SawoWebSDKInterface(
@@ -142,7 +142,7 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
 //            if (0 != applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) {
 //                WebView.setWebContentsDebuggingEnabled(true)
 //            }
-            delay(2000L)
+//            delay(2000L)
             mWebView.loadUrl(sawoWebSDKURL)
         }
 //        Handler(Looper.getMainLooper()).postDelayed(
