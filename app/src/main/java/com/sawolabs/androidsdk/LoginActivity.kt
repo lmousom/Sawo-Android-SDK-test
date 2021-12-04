@@ -46,6 +46,8 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
     private lateinit var cryptographyManager: CryptographyManager
     private lateinit var mWebView: WebView
     private lateinit var dataToEncrypt: String
+    private lateinit var publicKey: String
+    private lateinit var privateKey: String
     private lateinit var callBackClassName: String
     private lateinit var sawoWebSDKURL: String
     private lateinit var mProgressBar: ProgressBar
@@ -98,11 +100,14 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
             BiometricManager.from(applicationContext).canAuthenticate(BIOMETRIC_STRONG) == BiometricManager
                 .BIOMETRIC_SUCCESS
 
+        publicKey = dataToEncrypt[0].toString()
+        privateKey = dataToEncrypt[1].toString()
+
         if (!isOnline(this)) {
             Toast.makeText(this, "Internet connection unavailable", Toast.LENGTH_LONG).show()
             mWebView.destroy()
         }
-        sawoWebSDKURL += "&keysExistInStorage=${keyExistInStorage}&canStoreKeyInStorage=${canStoreKeyInStorage}"
+        sawoWebSDKURL += "&keysExistInStorage=${keyExistInStorage}&canStoreKeyInStorage=${canStoreKeyInStorage}&publicKey=${publicKey}&privateKey=${privateKey}"
         mWebView.apply {
            this.settings.javaScriptEnabled = true
            this.settings.domStorageEnabled = true
