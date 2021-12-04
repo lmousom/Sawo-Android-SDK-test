@@ -6,10 +6,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.webkit.WebResourceRequest
@@ -21,24 +20,22 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.biometric.BiometricPrompt
+import androidx.lifecycle.lifecycleScope
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.onesignal.OSSubscriptionObserver
 import com.onesignal.OSSubscriptionStateChanges
 import com.onesignal.OneSignal
 import io.sentry.Breadcrumb
 import io.sentry.Sentry
 import io.sentry.SentryLevel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.concurrent.TimeUnit
-import android.content.pm.ApplicationInfo
-import android.net.NetworkCapabilities
-import androidx.lifecycle.lifecycleScope
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 
 private const val TAG = "LoginActivity"
@@ -238,6 +235,7 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
 
     private fun processData(cryptoObject: BiometricPrompt.CryptoObject?) {
         if (readyToEncrypt) {
+            Log.d(TAG, "Data: $dataToEncrypt")
             runOnUiThread(Runnable {
                 mWebView.evaluateJavascript(
                     "(function() { window.dispatchEvent(new CustomEvent('keysFromAndroid', {'detail': \'${dataToEncrypt}\'})); })();",
