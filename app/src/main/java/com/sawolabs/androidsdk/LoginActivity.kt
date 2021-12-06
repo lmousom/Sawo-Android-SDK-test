@@ -129,7 +129,7 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
        }
 
         lifecycleScope.launch {
-            delay(2000L)
+
             val sharedPref = getSharedPreferences(SHARED_PREF_FILENAME, Context.MODE_PRIVATE)
             mWebView.addJavascriptInterface(
                 SawoWebSDKInterface(
@@ -140,6 +140,7 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
                 ),
                 "webSDKInterface"
             )
+            delay(2000L)
 //            if (0 != applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) {
 //                WebView.setWebContentsDebuggingEnabled(true)
 //            }
@@ -258,7 +259,6 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
         } else {
             if (encryptedData != null) {
                 encryptedData?.let { encryptedData ->
-                    Log.d(TAG, "Data: $dataToEncrypt")
                     val data = cryptographyManager.decryptData(
                         encryptedData.ciphertext,
                         cryptoObject?.cipher!!
