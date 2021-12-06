@@ -46,8 +46,8 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
     private lateinit var cryptographyManager: CryptographyManager
     private lateinit var mWebView: WebView
     private lateinit var dataToEncrypt: String
-    private lateinit var publicKey: String
-    private lateinit var privateKey: String
+//    private lateinit var publicKey: String
+//    private lateinit var privateKey: String
     private lateinit var callBackClassName: String
     private lateinit var sawoWebSDKURL: String
     private lateinit var mProgressBar: ProgressBar
@@ -63,25 +63,25 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
     private var keyExistInStorage: Boolean = false
     private var canStoreKeyInStorage: Boolean = false
 
-    private val broadCastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            val data = intent?.getStringExtra("key")
-            if(data!=null){
-                context?.getSharedPreferences(SHARED_PREF_FILENAME, 0)?.edit()
-                    ?.putString(SHARED_PREF_ENC_PAIR_KEY, data)?.apply()
-                Toast.makeText(context, "LoginActivity(): $data ", Toast.LENGTH_LONG).show()
-            }
-
-        }
-    }
+//    private val broadCastReceiver = object : BroadcastReceiver() {
+//        override fun onReceive(context: Context?, intent: Intent?) {
+//            val data = intent?.getStringExtra("key")
+//            if(data!=null){
+//                context?.getSharedPreferences(SHARED_PREF_FILENAME, 0)?.edit()
+//                    ?.putString(SHARED_PREF_ENC_PAIR_KEY, data)?.apply()
+//                Toast.makeText(context, "LoginActivity(): $data ", Toast.LENGTH_LONG).show()
+//            }
+//
+//        }
+//    }
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        LocalBroadcastManager.getInstance(this)
-            .registerReceiver(broadCastReceiver, IntentFilter("com.sawolabs.crypto"))
+//        LocalBroadcastManager.getInstance(this)
+//            .registerReceiver(broadCastReceiver, IntentFilter("com.sawolabs.crypto"))
         OneSignal.addSubscriptionObserver(this)
         registerDevice()
         sawoWebSDKURL = intent.getStringExtra(SAWO_WEBSDK_URL).toString()
@@ -106,7 +106,7 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
             Toast.makeText(this, "Internet connection unavailable", Toast.LENGTH_LONG).show()
             mWebView.destroy()
         }
-        sawoWebSDKURL += "&keysExistInStorage=${keyExistInStorage}&canStoreKeyInStorage=${canStoreKeyInStorage}&publicKey=${publicKey}&privateKey=${privateKey}"
+        sawoWebSDKURL += "&keysExistInStorage=${keyExistInStorage}&canStoreKeyInStorage=${canStoreKeyInStorage}"
         mWebView.apply {
            this.settings.javaScriptEnabled = true
            this.settings.domStorageEnabled = true
@@ -187,11 +187,11 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
         return false
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        LocalBroadcastManager.getInstance(this)
-            .unregisterReceiver(broadCastReceiver)
-    }
+//    override fun onDestroy() {
+//        super.onDestroy()
+//        LocalBroadcastManager.getInstance(this)
+//            .unregisterReceiver(broadCastReceiver)
+//    }
 
 
 
