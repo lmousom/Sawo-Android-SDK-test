@@ -100,8 +100,7 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
             BiometricManager.from(applicationContext).canAuthenticate(BIOMETRIC_STRONG) == BiometricManager
                 .BIOMETRIC_SUCCESS
 
-        publicKey = dataToEncrypt[0].toString()
-        privateKey = dataToEncrypt[1].toString()
+
 
         if (!isOnline(this)) {
             Toast.makeText(this, "Internet connection unavailable", Toast.LENGTH_LONG).show()
@@ -240,7 +239,7 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
 
     private fun processData(cryptoObject: BiometricPrompt.CryptoObject?) {
         if (readyToEncrypt) {
-            Log.d(TAG, "Data: $dataToEncrypt")
+
             runOnUiThread(Runnable {
                 mWebView.evaluateJavascript(
                     "(function() { window.dispatchEvent(new CustomEvent('keysFromAndroid', {'detail': \'${dataToEncrypt}\'})); })();",
@@ -259,10 +258,12 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
         } else {
             if (encryptedData != null) {
                 encryptedData?.let { encryptedData ->
+                    Log.d(TAG, "Data: $dataToEncrypt")
                     val data = cryptographyManager.decryptData(
                         encryptedData.ciphertext,
                         cryptoObject?.cipher!!
                     )
+                    Log.d(TAG, "decryptData: $data")
                     runOnUiThread(Runnable {
                         mWebView.evaluateJavascript(
                             "(function() { window.dispatchEvent(new CustomEvent('keysFromAndroid', {'detail': \'${data}\'})); })();",
