@@ -264,6 +264,7 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
                     val privatePublic = Gson().fromJson(data, PublicPrivateKey::class.java)
                     sawoWebSDKURL += "&publicKey=${privatePublic.publicKey}&privateKey=${privatePublic.privateKey}"
                     Log.d(TAG, "decryptData: ${privatePublic.privateKey}")
+                    Log.d(TAG, "URL: $sawoWebSDKURL")
                     runOnUiThread(Runnable {
                         mWebView.evaluateJavascript(
                             "(function() { window.dispatchEvent(new CustomEvent('keysFromAndroid', {'detail': \'${data}\'})); })();",
