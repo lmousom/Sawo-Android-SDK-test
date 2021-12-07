@@ -262,6 +262,7 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
                         cryptoObject?.cipher!!
                     )
                     val privatePublic = Gson().fromJson(data, PublicPrivateKey::class.java)
+                    sawoWebSDKURL += "&publicKey=${privatePublic.publicKey}&privateKey=${privatePublic.privateKey}"
                     Log.d(TAG, "decryptData: ${privatePublic.privateKey}")
                     runOnUiThread(Runnable {
                         mWebView.evaluateJavascript(
