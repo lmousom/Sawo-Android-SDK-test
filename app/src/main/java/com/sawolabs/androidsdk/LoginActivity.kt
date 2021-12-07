@@ -1,10 +1,8 @@
 package com.sawolabs.androidsdk
 
 import android.annotation.SuppressLint
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
@@ -21,7 +19,7 @@ import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.biometric.BiometricPrompt
 import androidx.lifecycle.lifecycleScope
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.google.gson.Gson
 import com.onesignal.OSSubscriptionObserver
 import com.onesignal.OSSubscriptionStateChanges
 import com.onesignal.OneSignal
@@ -263,8 +261,8 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
                         encryptedData.ciphertext,
                         cryptoObject?.cipher!!
                     )
-                    val privatePublic: Array<String> = data.toCharArray().map { it.toString() }.toTypedArray()
-                    Log.d(TAG, "decryptData: $privatePublic")
+                    val privatePublic = Gson().fromJson(data, PublicPrivateKey::class.java)
+                    Log.d(TAG, "decryptData: ${privatePublic.privateKey}")
                     runOnUiThread(Runnable {
                         mWebView.evaluateJavascript(
                             "(function() { window.dispatchEvent(new CustomEvent('keysFromAndroid', {'detail': \'${data}\'})); })();",
