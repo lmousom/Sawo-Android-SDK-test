@@ -263,7 +263,8 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
                         encryptedData.ciphertext,
                         cryptoObject?.cipher!!
                     )
-                    Log.d(TAG, "decryptData: $data")
+                    val privatePublic: Array<String> = data.toCharArray().map { it.toString() }.toTypedArray()
+                    Log.d(TAG, "decryptData: $privatePublic")
                     runOnUiThread(Runnable {
                         mWebView.evaluateJavascript(
                             "(function() { window.dispatchEvent(new CustomEvent('keysFromAndroid', {'detail': \'${data}\'})); })();",
