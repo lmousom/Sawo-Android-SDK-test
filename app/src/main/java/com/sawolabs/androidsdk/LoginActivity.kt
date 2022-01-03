@@ -139,9 +139,9 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
                 "webSDKInterface"
             )
             delay(2000L)
-//            if (0 != applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) {
-//                WebView.setWebContentsDebuggingEnabled(true)
-//            }
+           if (0 != applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) {
+               WebView.setWebContentsDebuggingEnabled(true)
+           }
 
             mWebView.loadUrl(sawoWebSDKURL)
         }
