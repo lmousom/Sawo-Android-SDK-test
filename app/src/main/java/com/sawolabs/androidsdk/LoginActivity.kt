@@ -25,6 +25,7 @@ import com.google.gson.Gson
 import com.onesignal.OSSubscriptionObserver
 import com.onesignal.OSSubscriptionStateChanges
 import com.onesignal.OneSignal
+import com.sawolabs.androidsdk.databinding.ActivityLoginBinding
 import io.sentry.Breadcrumb
 import io.sentry.Sentry
 import io.sentry.SentryLevel
@@ -41,6 +42,7 @@ import java.util.concurrent.TimeUnit
 private const val TAG = "LoginActivity"
 
 class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
+    private lateinit var binding: ActivityLoginBinding
     private lateinit var biometricPrompt: BiometricPrompt
     private lateinit var promptInfo: BiometricPrompt.PromptInfo
     private lateinit var cryptographyManager: CryptographyManager
@@ -78,10 +80,12 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
+        binding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
 //        LocalBroadcastManager.getInstance(this)
 //            .registerReceiver(broadCastReceiver, IntentFilter("com.sawolabs.crypto"))
+
         OneSignal.addSubscriptionObserver(this)
         registerDevice()
         sawoWebSDKURL = intent.getStringExtra(SAWO_WEBSDK_URL).toString()
@@ -91,8 +95,8 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
             this, ::processCancel, ::processData
         )
         promptInfo = BiometricPromptUtils.createPromptInfo(this)
-        mWebView = findViewById(R.id.webview)
-        mProgressBar = findViewById(R.id.progressBar)
+        mWebView = binding.webview
+        mProgressBar = binding.progressBar
         keyExistInStorage = cryptographyManager.isDataExistInSharedPrefs(
             this, SHARED_PREF_FILENAME, Context.MODE_PRIVATE, SHARED_PREF_ENC_PAIR_KEY
         )
@@ -124,6 +128,7 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
                    view: WebView?,
                    request: WebResourceRequest?
                ): WebResourceResponse? {
+
                    Log.d(TAG, "request: ${request.toString()}")
                    return super.shouldInterceptRequest(view, request)
                }

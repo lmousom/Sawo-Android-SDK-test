@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricPrompt
 import com.google.gson.Gson
+import com.sawolabs.androidsdk.databinding.ActivityNotificationBinding
 import io.sentry.Breadcrumb
 import io.sentry.Sentry
 import io.sentry.SentryLevel
@@ -22,6 +23,7 @@ import retrofit2.Response
 private const val TAG = "NotificationActivity"
 
 class NotificationActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityNotificationBinding
     private lateinit var biometricPrompt: BiometricPrompt
     private lateinit var promptInfo: BiometricPrompt.PromptInfo
     private lateinit var yesBtn: Button
@@ -32,15 +34,16 @@ class NotificationActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_notification)
+        binding = ActivityNotificationBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         additionalData = Gson().fromJson(
             intent.getStringExtra(TRUSTED_DEVICE_NOTIFICATION_ADDITIONAL_DATA),
             PushNotificationAdditionalData::class.java
         )
-        deviceInformationText = findViewById(R.id.textView)
-        yesBtn = findViewById(R.id.button2)
-        noBtn = findViewById(R.id.button3)
+        deviceInformationText = binding.textView
+        yesBtn = binding.button2
+        noBtn = binding.button3
         deviceInformationText.text = getString(
             R.string.trusted_device_notification_activity_text_view_1_text,
             "${additionalData.secondary_device_brand}  ${additionalData.secondary_device_model}"
@@ -66,16 +69,16 @@ class NotificationActivity : AppCompatActivity() {
         yesBtn.visibility = View.VISIBLE
         noBtn.visibility = View.VISIBLE
         deviceInformationText.visibility = View.VISIBLE
-        findViewById<TextView>(R.id.textView2).visibility = View.VISIBLE
+        binding.textView2.visibility = View.VISIBLE
     }
 
     fun callApi(view: View) {
         when (view.id) {
-            R.id.button2 -> {
+            binding.button2.id -> {
                 callApiSecondaryDevice(true)
                 finish()
             }
-            R.id.button3 -> {
+            binding.button3.id -> {
                 callApiSecondaryDevice(false)
                 finish()
             }
