@@ -32,10 +32,13 @@ import io.sentry.SentryLevel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
+import org.apache.commons.io.IOUtils
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.StringWriter
+import java.net.URL
 import java.util.concurrent.TimeUnit
 
 
@@ -128,8 +131,22 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
                    view: WebView?,
                    request: WebResourceRequest?
                ): WebResourceResponse? {
+                val url = request?.url.toString()
+                   try {
+                       val aURL = URL(url)
+                       val conn = aURL.openConnection()
+                       conn.connect()
+                       val `is` = conn.getInputStream()
+                       val writter = StringWriter()
+                       IOUtils.copy(`is`, writter, "UTF-8")
+                       Log.e(TAG, "String: $writter")
+                       val `object` = JSONObject(writter.toString())
+                       Log.e(TAG, "JSON Object: $`object`")
 
-                   Log.d(TAG, "request: ${request.toString()}")
+                   }catch (e: Exception){
+                       e.printStackTrace()
+                       Log.e(TAG, "error: " + e.message)
+                   }
                    return super.shouldInterceptRequest(view, request)
                }
 
