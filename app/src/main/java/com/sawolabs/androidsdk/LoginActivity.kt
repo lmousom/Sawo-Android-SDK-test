@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.ProgressBar
@@ -61,6 +62,17 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
     private val secretKeyName = "SAWO_BIOMETRIC_ENCRYPTION_KEY"
     private var keyExistInStorage: Boolean = false
     private var canStoreKeyInStorage: Boolean = false
+
+    var script = """
+var open = XMLHttpRequest.prototype.open;
+XMLHttpRequest.prototype.open = function() {
+  this.addEventListener("load", function() {
+    var message = {"status" : this.status, "responseURL" : this.responseURL, "response" : this.response }
+    SawoWebSDKInterface.
+  });
+  open.apply(this, arguments);
+};
+"""
 
 //    private val broadCastReceiver = object : BroadcastReceiver() {
 //        override fun onReceive(context: Context?, intent: Intent?) {
@@ -119,6 +131,14 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
                    return super.shouldOverrideUrlLoading(view, request)
                }
 
+               override fun shouldInterceptRequest(
+                   view: WebView?,
+                   request: WebResourceRequest?
+               ): WebResourceResponse? {
+                   Log.d(TAG, "request: ${request.toString()}")
+                   return super.shouldInterceptRequest(view, request)
+               }
+
                override fun onPageFinished(view: WebView?, url: String?) {
                    super.onPageFinished(view, url)
                    mProgressBar.visibility = View.GONE
@@ -135,7 +155,8 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
                     ::passPayloadToCallbackActivity,
                     ::authenticateToEncrypt,
                     ::authenticateToDecrypt,
-                    sharedPref.getString(SHARED_PREF_DEVICE_ID_KEY, null).toString()
+                    sharedPref.getString(SHARED_PREF_DEVICE_ID_KEY, null).toString(),
+
                 ),
                 "webSDKInterface"
             )

@@ -6,7 +6,8 @@ class SawoWebSDKInterface(
     private val passPayload: (String) -> Unit,
     private val authenticateToEncrypt: (String) -> Unit,
     private val authenticateToDecrypt: () -> Unit,
-    private val deviceID: String
+    private val deviceID: String,
+
 ) {
     @JavascriptInterface
     fun handleOnSuccessCallback(message: String) {
@@ -27,4 +28,6 @@ class SawoWebSDKInterface(
     fun getPlayerID(): String {
         return deviceID
     }
+
+
 }
