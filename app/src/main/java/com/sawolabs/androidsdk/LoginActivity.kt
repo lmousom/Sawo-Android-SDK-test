@@ -139,7 +139,7 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
                        val `is` = conn.getInputStream()
                        val writter = StringWriter()
                        IOUtils.copy(`is`, writter, "UTF-8")
-                       Log.e(TAG, "String: $writter")
+//                       Log.e(TAG, "String: $writter")
                        val `object` = JSONObject(writter.toString())
                        Log.e(TAG, "JSON Object: $`object`")
 
