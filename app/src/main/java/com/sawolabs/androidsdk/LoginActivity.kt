@@ -63,17 +63,6 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
     private var keyExistInStorage: Boolean = false
     private var canStoreKeyInStorage: Boolean = false
 
-    var script = """
-var open = XMLHttpRequest.prototype.open;
-XMLHttpRequest.prototype.open = function() {
-  this.addEventListener("load", function() {
-    var message = {"status" : this.status, "responseURL" : this.responseURL, "response" : this.response }
-    SawoWebSDKInterface.
-  });
-  open.apply(this, arguments);
-};
-"""
-
 //    private val broadCastReceiver = object : BroadcastReceiver() {
 //        override fun onReceive(context: Context?, intent: Intent?) {
 //            val data = intent?.getStringExtra("key")
@@ -283,10 +272,10 @@ XMLHttpRequest.prototype.open = function() {
                         encryptedData.ciphertext,
                         cryptoObject?.cipher!!
                     )
-                    val privatePublic = Gson().fromJson(data, PublicPrivateKey::class.java)
-                    sawoWebSDKURL += "&publicKey=${privatePublic.publicKey}&privateKey=${privatePublic.privateKey}"
-                    Log.d(TAG, "decryptData: ${privatePublic.privateKey}")
-                    Log.d(TAG, "URL: $sawoWebSDKURL")
+//                    val privatePublic = Gson().fromJson(data, PublicPrivateKey::class.java)
+//                    sawoWebSDKURL += "&publicKey=${privatePublic.publicKey}&privateKey=${privatePublic.privateKey}"
+//                    Log.d(TAG, "decryptData: ${privatePublic.privateKey}")
+//                    Log.d(TAG, "URL: $sawoWebSDKURL")
                     runOnUiThread(Runnable {
                         mWebView.evaluateJavascript(
                             "(function() { window.dispatchEvent(new CustomEvent('keysFromAndroid', {'detail': \'${data}\'})); })();",
