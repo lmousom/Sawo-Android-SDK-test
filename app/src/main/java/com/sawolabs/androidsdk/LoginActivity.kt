@@ -3,11 +3,13 @@ package com.sawolabs.androidsdk
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.ApplicationInfo
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.util.Log
 import android.view.View
 import android.webkit.WebResourceRequest
@@ -56,6 +58,7 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
     private lateinit var callBackClassName: String
     private lateinit var sawoWebSDKURL: String
     private lateinit var mProgressBar: ProgressBar
+    val sharedPreferences: SharedPreferences = this.getSharedPreferences("OneSignal",Context.MODE_PRIVATE)
     private val encryptedData
         get() = cryptographyManager.getEncryptedDataFromSharedPrefs(
             applicationContext,
@@ -141,6 +144,16 @@ class LoginActivity : AppCompatActivity(), OSSubscriptionObserver {
                        IOUtils.copy(`is`, writter, "UTF-8")
 //                       Log.e(TAG, "String: $writter")
                        val `object` = JSONObject(writter.toString())
+                       val jsonOBJ = `object`.toString()
+                       val onesignalAppID = Gson().fromJson(jsonOBJ, OneSignalData::class.java)
+                       val editor:SharedPreferences.Editor =  sharedPreferences.edit()
+                       editor.putString("app_id",onesignalAppID.app_id)
+                       editor.apply()
+                       editor.commit()
+
+
+//                       PreferenceManager.getDefaultSharedPreferences(context).edit()
+//                           .putString("onesignal_app_id",`object`.toString()).apply();
                        Log.e(TAG, "JSON Object: $`object`")
 
                    }catch (e: Exception){
