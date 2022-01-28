@@ -1,6 +1,6 @@
 plugins {
     id 'com.onesignal.androidsdk.onesignal-gradle-plugin'
-
+    id 'kotlin-android-extensions'
     // Other plugins here if pre-existing
 }
 
